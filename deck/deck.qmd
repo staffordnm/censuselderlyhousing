@@ -19,7 +19,8 @@ When you click the **Render** button a document will be generated that includes:
 When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
 
 ```{r}
-1 + 1
+library(tidyverse)
+df <- read_csv(here::here("data", "data.csv"))
+
+print(df$`item 1`)
 ```
-
-
