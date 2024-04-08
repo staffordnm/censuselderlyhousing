@@ -1,0 +1,124 @@
+---
+title: "Project Proposal"
+authors: Suher Adi and Nicole Stafford (SANS)
+format: html
+editor: visual
+---
+
+## Introduction
+
+The overall research question: *How are different aging populations affected by housing costs in Central Pines Regional Council’s seven NC counties?*
+
+The seven counties in North Carolina we will be looking at are:
+
+1.  Chatham
+
+2.  Durham
+
+3.  Orange
+
+4.  Wake
+
+5.  Moore
+
+6.  Lee
+
+7.  Johnston
+
+“Rent burden” or “housing burden” is defined as a individual spending over 30% of their gross income on rent or housing costs. We hope to be able to look at factors impacting “rent burden” such as race, gender, and age. Our data visualizations will explore these factors in the 7 counties and compare the 7 counties as well.
+
+Our data will come from the Census Bureau’s survey’s: ACS 1-Year Estimates Public Use Microdata Sample from 2021 (ACSPUMS1Y2021).
+
+## Data
+
+Unzip 562_final_project_SANS and save ACSPUMS1Y2021_all_counties.csv in a folder called 'data'.
+
+```{r}
+#install packages
+install.packages("codebook")
+
+#load libraries
+library(tidyverse)
+library(codebook)
+library(dataReporter)
+
+#load data
+housing <- read_csv(here::here("data", "ACSPUMS1Y2021_all_counties.csv"))
+
+#change names
+colnames(housing) <- c(
+"household_income", 
+"percent_gross_rent",
+"housing_unit",
+"sex",
+"asian",
+"property_taxes",
+"total_income",
+"black",
+"white",
+"age",
+"american_indian",
+"person_weight",
+"percent_gross_own",
+"tenure",
+"monthly_rent",
+"pum_code",
+"county_city"
+)
+
+#add attributes
+attr(housing$household_income,  "shortDescription") <- "Household income (past 12 months, use ADJINC to adjust HINCP to constant dollars)"
+attr(housing$percent_gross_rent, "shortDescription") <- "Gross rent as a percentage of household income past 12 months"
+attr(housing$housing_unit, "shortDescription") <- "Housing Unit Weight"
+attr(housing$sex, "shortDescription") <- "Sex"
+attr(housing$asian, "shortDescription") <- "Asian recode (Asian alone or in combination with one or more other races)"
+attr(housing$property_taxes, "shortDescription") <- "Property taxes (yearly real estate taxes)"
+attr(housing$total_income, "shortDescription") <- "Total person's income (signed, use ADJINC to adjust to constant dollars)"
+attr(housing$black, "shortDescription") <- "Black or African American recode (Black alone or in combination with one or more other races)"
+attr(housing$white, "shortDescription") <- "White recode (White alone or in combination with one or more other races)"
+attr(housing$age, "shortDescription") <- "Age"
+attr(housing$american_indian, "shortDescription") <- "American Indian and Alaska Native recode (American Indian and Alaska Native alone or in combination with one or more other races)"
+attr(housing$person_weight, "shortDescription") <-  "PUMS person weight"
+attr(housing$percent_gross_own, "shortDescription") <- "Selected monthly owner costs as a percentage of household income during the past 12 months"
+attr(housing$tenure, "shortDescription") <- "Tenure"
+attr(housing$monthly_rent, "shortDescription") <- "Monthly rent"
+attr(housing$pum_code, "shortDescription") <- "Public Use Microdata (PUM) code"
+attr(housing$county_city, "shortDescription") <- "Associated county/city name"
+
+#create codebook
+codebook <- makeCodebook(data = housing, replace=TRUE)
+
+```
+
+## Data Analysis Plan
+
+Key Variables to help us answer the question are: AGEP, TEN, GRPIP, OCPIP, and PUMA_NAME
+
+The rest of the variables are helpful for further analysis of different demographics as supplemental research to the overall question.
+
+Most of the observations are from Wake County, with some standard counts from the rest of the counties.
+
+```{r}
+ggplot(data = housing, aes(x=PUMA_NAME)) + 
+  geom_bar()
+```
+
+The population data of each county show us the different sizes of counties we are interested in which will help us understand the severity of results if a high percentage shows up in a highly populated county. Other summary statistics can be shared once we resolve our issues with R reading our dataset.
+
+However, Wake County is the largest county, so perhaps this is more or less proportional.
+
+```{r}
+ggplot(data = housing, aes(x=AGEP)) + 
+  geom_bar()
+```
+
+Age of observations seems somewhat normal with an expected trail off as age increases. Although, there is a random spike right at the oldest age, but I think this may be due to a catch-all category like “85 and older” as I have seen in other census.gov reports.
+
+```{r}
+ggplot(data = housing, aes(x=TEN)) + 
+  geom_bar()
+```
+
+Most observations in the data seem to be classified as those that “own their home with a mortgage or loan (including home equity loans)” or a “1” within the TEN variable.
+
+Methods we will use include plotting methods in ggplot2 and leaflet to create interactive maps. By using census data, we will look at different population characteristics and how that is related to housing costs and housing burden.

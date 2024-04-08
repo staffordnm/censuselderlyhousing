@@ -1,0 +1,65 @@
+---
+title: "Housing Burden Among Aging Populations"
+format: dashboard
+editor: visual
+server: shiny
+---
+
+```{r}
+#| context: setup
+
+library(tidyverse)
+
+#load data
+housing <- read_csv(here::here("data", "ACSPUMS1Y2021_all_counties.csv"))
+
+#change names
+colnames(housing) <- c(
+"housing_unit_weight",
+"person_weight",
+"household_income",
+"total_person_income",
+"percent_gross_own",
+"property_taxes",
+"monthly_rent",
+"age",
+"percent_gross_rent",
+"tenure",
+"sex",
+"american_indian",
+"asian",
+"white",
+"black",
+"pum_code",
+"state",
+"county"
+)
+
+#data cleaning
+housing <- housing |> 
+  mutate(
+    rent_burden = if_else(percent_gross_rent >= 30, "Rent Burden", "Not Rent Burden")
+  )
+
+housing <- housing |> 
+  mutate(
+    owner_burden = if_else(percent_gross_own >= 30, "Owner Cost Burden", "Not Owner Cost Burden")
+  )
+
+
+housing <- housing |> 
+  group_by(county, tenure) |> 
+  mutate(
+    n_pop = n(),
+    percent_rent_burden_county = sum(rent_burden=="Rent Burden") / n_pop
+  )
+
+housing <- housing |> 
+  group_by(county, tenure) |> 
+  mutate(
+    n_pop = n(),
+    percent_owner_burden_county = sum(owner_burden=="Owner Cost Burden") / n_pop
+  )
+```
+
+#  {.sidebar}
