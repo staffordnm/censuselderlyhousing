@@ -19,6 +19,7 @@ install = TRUE
 ```
 
 #  {.sidebar}
+
 ```{r}
 
 ```
@@ -94,10 +95,13 @@ housing <- housing |>
 puma <- tigris::pumas("North Carolina", cb = TRUE, year = 2020)
 str(puma)
 nc_puma <- tigris::pumas("NC", cb = TRUE, year = 2020)
+nc_puma
 merged_data <- merge(nc_puma, housing, by.x = "PUMACE20", by.y = "pum_code")
+merged_data
 ```
 
-# Map 1 
+# Map 1
+
 ```{r}
 map1 <- ggplot() +
   geom_sf(data = merged_data, aes(fill = aging_rent_burden_pct)) +
@@ -106,10 +110,11 @@ map1 <- ggplot() +
        fill = "aging_rent_burden_pct",
        caption = "Source: My Data") +
   theme_minimal()
-print(map1)
+map1
 ```
 
 # Graph 2
+
 ```{r}
 map2 <- ggplot() +
   geom_sf(data = merged_data, aes(fill = aging_owner_burden_pct)) +
@@ -118,17 +123,23 @@ map2 <- ggplot() +
        fill = "aging_owner_burden_pct",
        caption = "Source: My Data") +
   theme_minimal()
-print(map2)
+map2
 ```
 
 # Graph 3
+
 ```{r}
 
 ```
 
 # Graph 4
+
 ```{r}
 
 ```
 
 # Graph 5
+```{r}
+
+```
+
