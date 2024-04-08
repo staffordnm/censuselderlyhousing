@@ -9,11 +9,27 @@ server: shiny
 #| context: setup
 
 library(tidyverse)
+library(tigris)
+library(ggplot2)
+options(tigris_use_cache = TRUE)
+library(tidycensus)
 
-#load data
+census_api_key("7941d5fa13fcf9df50ce662e6c460ae7b6ffc5da")
+install = TRUE
+```
+
+#  {.sidebar}
+```{r}
+
+```
+
+```{r}
+#| context: server
+
+# load data
 housing <- read_csv(here::here("data", "ACSPUMS1Y2021_all_counties.csv"))
 
-#change names
+# change names
 colnames(housing) <- c(
 "housing_unit_weight",
 "person_weight",
@@ -35,7 +51,7 @@ colnames(housing) <- c(
 "county"
 )
 
-#data cleaning
+# data cleaning
 housing <- housing |> 
   mutate(
     rent_burden = if_else(percent_gross_rent >= 30, "Rent Burden", "Not Rent Burden")
@@ -45,7 +61,6 @@ housing <- housing |>
   mutate(
     owner_burden = if_else(percent_gross_own >= 30, "Owner Cost Burden", "Not Owner Cost Burden")
   )
-
 
 housing <- housing |> 
   group_by(county, tenure) |> 
@@ -60,6 +75,60 @@ housing <- housing |>
     n_pop = n(),
     percent_owner_burden_county = sum(owner_burden=="Owner Cost Burden") / n_pop
   )
+
+housing <- housing |>
+  group_by(pum_code) |> 
+  mutate(
+    aging_rent_burden = sum(person_weight[rent_burden == "Rent Burden" & age >= 55]),
+    aging_rent_burden_pct = aging_rent_burden / sum(person_weight[age >= 55])
+  )
+
+housing <- housing |>
+  group_by(pum_code) |> 
+  mutate(
+    aging_owner_burden = sum(person_weight[owner_burden == "Owner Cost Burden" & age >= 55]),
+    aging_owner_burden_pct = aging_owner_burden / sum(person_weight[age >= 55])
+  )
+
+#merging with tidycensus shape files
+puma <- tigris::pumas("North Carolina", cb = TRUE, year = 2020)
+str(puma)
+nc_puma <- tigris::pumas("NC", cb = TRUE, year = 2020)
+merged_data <- merge(nc_puma, housing, by.x = "PUMACE20", by.y = "pum_code")
 ```
 
-#  {.sidebar}
+# Map 1 
+```{r}
+map1 <- ggplot() +
+  geom_sf(data = merged_data, aes(fill = aging_rent_burden_pct)) +
+  scale_fill_viridis_c() +  # color scale
+  labs(title = "My Data Mapped on PUMA Boundaries",
+       fill = "aging_rent_burden_pct",
+       caption = "Source: My Data") +
+  theme_minimal()
+print(map1)
+```
+
+# Graph 2
+```{r}
+map2 <- ggplot() +
+  geom_sf(data = merged_data, aes(fill = aging_owner_burden_pct)) +
+  scale_fill_viridis_c() +  # color scale
+  labs(title = "My Data Mapped on PUMA Boundaries",
+       fill = "aging_owner_burden_pct",
+       caption = "Source: My Data") +
+  theme_minimal()
+print(map2)
+```
+
+# Graph 3
+```{r}
+
+```
+
+# Graph 4
+```{r}
+
+```
+
+# Graph 5
