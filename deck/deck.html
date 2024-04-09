@@ -11,7 +11,7 @@
   <meta name="generator" content="quarto-1.4.551">
 
   <meta name="author" content="Suher Adi and Nicole Stafford">
-  <title>Housing Burden for NC Aging Populations</title>
+  <title>Housing Burden for Seven NC Counties</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -326,7 +326,7 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Housing Burden for NC Aging Populations</h1>
+  <h1 class="title">Housing Burden for Seven NC Counties</h1>
 
 <div class="quarto-title-authors">
 <div class="quarto-title-author">
@@ -337,8 +337,8 @@ Suher Adi and Nicole Stafford
 </div>
 
 </section>
-<section id="research-question" class="title-slide slide level1 center">
-<h1>Research Question</h1>
+<section id="research-question" class="slide level2">
+<h2>Research Question</h2>
 <style>
 .reveal {
     background-color: lavender;
@@ -346,17 +346,27 @@ Suher Adi and Nicole Stafford
 
 .reveal h1 {
     font-family: Arial, sans-serif;
-    font-size: 30px; 
+    text-align: center;
+}
+
+.reveal h2 {
+   font-family: Arial, sans-serif;
+    text-align: center;
+}
 </style>
 <p>How are different aging populations affected by housing costs in Central Pines Regional Council’s seven NC counties?</p>
-<ul>
-<li>7 Counties: Chatham and Lee, Durham, Orange, Wake, Moore and Montgomery, Lee, Johnston</li>
-</ul>
+<ol type="1">
+<li>Chatham and Lee</li>
+<li>Durham</li>
+<li>Orange</li>
+<li>Wake</li>
+<li>Moore and Montgomery</li>
+<li>Lee</li>
+<li>Johnston</li>
+</ol>
 </section>
-
-<section>
-<section id="data-used" class="title-slide slide level1 center">
-<h1>Data Used</h1>
+<section id="data-used" class="slide level2">
+<h2>Data Used</h2>
 <ul>
 <li>Latitude and Longitude data via tidycensus</li>
 <li>Census Bureau’s survey’s: ACS 1-Year Estimates Public Use Microdata Sample from 2021 (ACSPUMS1Y2021)</li>
@@ -364,34 +374,53 @@ Suher Adi and Nicole Stafford
 </section>
 <section id="weights" class="slide level2">
 <h2>Weights</h2>
-<ul>
-<li>Added to the data to show the frequency of an observation in the data set</li>
-<li>The larger the weight the more representative that observation is, the smaller the more of anomaly that observation is in terms of generalizability to the larger population</li>
-</ul>
-</section></section>
-<section>
-<section id="variables" class="title-slide slide level1 center">
-<h1>Variables</h1>
-<ol type="1">
-<li>housing_unit_weight</li>
-<li>person_weight</li>
-<li>household_income</li>
-<li>total_person_income</li>
-<li>percent_gross_own</li>
-<li>property_taxes</li>
-<li>monthly_rent</li>
-<li>age</li>
-<li>percent_gross_rent</li>
-<li>tenure</li>
-<li>sex</li>
-<li>american_indian</li>
-<li>asian</li>
-<li>white</li>
-<li>black</li>
-<li>pum_code</li>
-<li>state</li>
-<li>county</li>
-</ol>
+<p>PUMS data is a sample of about 1% of the US population.</p>
+<p>When we want to estimate a variable that represents the entire population rather than a sample, we have to apply a weighting adjustment.</p>
+<p>The weight variable tells us the number of people in the population that the observation represents.</p>
+<p>We used the PUMS person weight for all population estimate calculations.</p>
+</section>
+<section id="variables" class="slide level2">
+<h2>Variables</h2>
+<table>
+<tbody>
+<tr class="odd">
+<td>housing_unit_weight</td>
+<td>tenure</td>
+</tr>
+<tr class="even">
+<td>person_weight</td>
+<td>sex</td>
+</tr>
+<tr class="odd">
+<td>household_income</td>
+<td>american_indian</td>
+</tr>
+<tr class="even">
+<td>total_person_income</td>
+<td>asian</td>
+</tr>
+<tr class="odd">
+<td>percent_gross_own</td>
+<td>white</td>
+</tr>
+<tr class="even">
+<td>property_taxes</td>
+<td>black</td>
+</tr>
+<tr class="odd">
+<td>monthly_rent</td>
+<td>pum_code</td>
+</tr>
+<tr class="even">
+<td>age</td>
+<td>state</td>
+</tr>
+<tr class="odd">
+<td>percent_gross_rent</td>
+<td>county</td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="variables-created" class="slide level2">
 <h2>Variables Created</h2>
@@ -402,13 +431,32 @@ Suher Adi and Nicole Stafford
 <li>Aging_Rent_Burden: rent burden for indivudals over 55 years old</li>
 <li>Aging_Owner_Burden: housing burden for indivudals over 55 years old</li>
 </ol>
-</section></section>
-<section id="findings" class="title-slide slide level1 center">
-<h1>Findings</h1>
-<iframe src="https://rpubs.com/adisuher/1171680" width="800" height="600" frameborder="0">
+</section>
+<section id="findings" class="slide level2">
+<h2>Findings</h2>
+
+<img data-src="zoom_out.jpeg" class="r-stretch quarto-figure-center"><p class="caption">Data from the 2021 ACS</p></section>
+<section class="slide level2">
+
+
+<img data-src="zoom_in.jpeg" class="r-stretch quarto-figure-center"><p class="caption">Data from the 2021 ACS</p></section>
+<section class="slide level2">
+
+
+<img data-src="rent.jpeg" class="r-stretch quarto-figure-center"><p class="caption">Data from the 2021 ACS</p></section>
+<section class="slide level2">
+
+
+<img data-src="mortgage.jpeg" class="r-stretch quarto-figure-center"><p class="caption">Data from the 2021 ACS</p></section>
+<section class="slide level2">
+
+
+<img data-src="NC_Maps.jpeg" class="r-stretch quarto-figure-center"><p class="caption">Data from the 2021 ACS</p></section>
+<section id="findings-1" class="slide level2">
+<h2>Findings</h2>
+<iframe src="https://staffordnm.github.io/censuselderlyhousing/dashboard/" width="800" height="600" frameborder="0">
 </iframe>
 </section>
-
 <section id="thank-you" class="title-slide slide level1 center">
 <h1>Thank You!</h1>
 <div class="quarto-auto-generated-content">

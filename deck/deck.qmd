@@ -1,9 +1,9 @@
 ---
-title: "Housing Burden for NC Aging Populations"
+title: "Housing Burden for Seven NC Counties"
 author: "Suher Adi and Nicole Stafford"
 format: revealjs
 ---
-# Research Question
+## Research Question
 <style>
 .reveal {
     background-color: lavender;
@@ -11,49 +11,53 @@ format: revealjs
 
 .reveal h1 {
     font-family: Arial, sans-serif;
-    font-size: 30px; 
+    text-align: center;
+}
+
+.reveal h2 {
+   font-family: Arial, sans-serif;
+    text-align: center;
+}
 </style>
+
 
 How are different aging populations affected by housing costs in Central Pines Regional Council’s seven NC counties?
 
-- 7 Counties: 
-Chatham and Lee,
-Durham,
-Orange,
-Wake, 
-Moore and Montgomery,
-Lee,
-Johnston
+1. Chatham and Lee
+2. Durham
+3. Orange
+4. Wake 
+5. Moore and Montgomery
+6. Lee
+7. Johnston
 
-
-# Data Used
+## Data Used
 
 - Latitude and Longitude data via tidycensus 
 - Census Bureau’s survey’s: ACS 1-Year Estimates Public Use Microdata Sample from 2021 (ACSPUMS1Y2021)
 
 ## Weights
-- Added to the data to show the frequency of an observation in the data set
-- The larger the weight the more representative that observation is, the smaller the more of anomaly that observation is in terms of generalizability to the larger population
+PUMS data is a sample of about 1% of the US population. 
 
-# Variables
-1. housing_unit_weight
-2. person_weight
-3. household_income
-4. total_person_income
-5. percent_gross_own
-6. property_taxes
-7. monthly_rent
-8. age
-9. percent_gross_rent
-10. tenure
-11. sex
-12. american_indian
-13. asian
-14. white
-15. black
-16. pum_code
-17. state
-18. county
+When we want to estimate a variable that represents the entire population rather than a sample, we have to apply a weighting adjustment. 
+
+The weight variable tells us the number of people in the population that the observation represents. 
+
+We used the PUMS person weight for all population estimate calculations.
+
+## Variables
+|                  |                      |
+|------------------|----------------------|
+| housing_unit_weight |   tenure    |
+| person_weight    | sex                  |
+| household_income | american_indian   |
+| total_person_income | asian            |
+| percent_gross_own | white                |
+| property_taxes   | black     |
+|  monthly_rent    | pum_code               |
+|   age            | state               |
+|  percent_gross_rent  | county           |
+
 
 ## Variables Created
 1. Rent Burden: if obs rent burdened or not 
@@ -62,7 +66,27 @@ Johnston
 4. Aging_Rent_Burden: rent burden for indivudals over 55 years old
 5. Aging_Owner_Burden: housing burden for indivudals over 55 years old
 
-# Findings
-<iframe src="https://rpubs.com/adisuher/1171680" width="800" height="600" frameborder="0"></iframe>
+## Findings
+
+![Data from the 2021 ACS](zoom_out.jpeg)
+
+---
+
+![Data from the 2021 ACS](zoom_in.jpeg)
+
+---
+
+![Data from the 2021 ACS](rent.jpeg)
+
+---
+
+![Data from the 2021 ACS](mortgage.jpeg)
+
+---
+
+![Data from the 2021 ACS](NC_Maps.jpeg)
+
+## Findings
+<iframe src="https://staffordnm.github.io/censuselderlyhousing/dashboard/" width="800" height="600" frameborder="0"></iframe>
 
 # Thank You!
