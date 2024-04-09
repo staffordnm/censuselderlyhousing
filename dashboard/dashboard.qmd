@@ -10,7 +10,7 @@ library(ggplot2)
 library(tidycensus)
 library(shiny)
 library(patchwork)
-#census_api_key("7941d5fa13fcf9df50ce662e6c460ae7b6ffc5da", install = TRUE)
+census_api_key("7941d5fa13fcf9df50ce662e6c460ae7b6ffc5da", install = TRUE)
 ```
 
 ```{r}
@@ -153,17 +153,109 @@ patchwork + plot_annotation(
 # Graph 3
 
 ```{r}
+filtered_data <- housing |>
+filter(age >= 55 & (white == 1 | black == 1) & rent_burden %in% c("Rent Burden"))
 
+agg_data_rent <- filtered_data |>
+  group_by(county) |>
+  summarise(
+    white_agg = sum(white == 1),
+    black_agg = sum(black == 1)
+  ) |>
+  pivot_longer(cols = c(white_agg, black_agg),
+               names_to = "race",
+               values_to = "agg_rent_burden")
+
+dot_plot_rent <- ggplot(agg_data_rent, aes(x = county, y = agg_rent_burden, color = race)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
+  labs(x = "Counties", y = "Aggregate Rent Burden ", color = "Race") +
+  ggtitle("Aggregate Rent Burden by Race for Individuals Over 55") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_color_manual(values = c("black_agg" = "#64dae6", "white_agg" = "#63bcc1"),
+                    labels = c("black_agg" = "Black Resident Rent Burden", "white_agg" = "White Resident Rent Burdened"))
+
+dot_plot_rent
 ```
 
 # Graph 4
 
 ```{r}
+filtered_data <- housing |>
+filter(age >= 55 & (white == 1 | black == 1) & owner_burden %in% c("Owner Cost Burden"))
 
+agg_data_own <- filtered_data |>
+  group_by(county) |>
+  summarise(
+    white_agg = sum(white == 1),
+    black_agg = sum(black == 1)
+  ) |>
+  pivot_longer(cols = c(white_agg, black_agg),
+               names_to = "race",
+               values_to = "agg_own_burden")
+
+dot_plot_own <- ggplot(agg_data_own, aes(x = county, y = agg_own_burden, color = race)) +
+  geom_point(position = position_dodge(width = 0.5), size = 3) +
+  labs(x = "Counties", y = "Aggregate Mortgage Burden ", color = "Race") +
+  ggtitle("Aggregate Mortgage Burden by Race for Individuals Over 55") +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  scale_color_manual(values = c("black_agg" = "#a3dee8", "white_agg" = "#49497f"),
+                    labels = c("black_agg" = "Black Resident Mortgage Burden", "white_agg" = "White Resident Mortgage Burden"))
+
+dot_plot_own
 ```
 
 # Graph 5
 
 ```{r}
+library(dplyr)
+library(ggplot2)
 
+age_groups <- c("65 to 69 years", "70 to 74 years", "75 to 79 years", "80 to 84 years", "85 years & over")
+
+stacked_housing <- housing |>
+  mutate(age_group = case_when(
+    age >= 65 & age <= 69 ~ "65 to 69 years",
+    age >= 70 & age <= 74 ~ "70 to 74 years",
+    age >= 75 & age <= 79 ~ "75 to 79 years",
+    age >= 80 & age <= 84 ~ "80 to 84 years",
+    age >= 85 ~ "85 years & over",
+    TRUE ~ "Other"
+  )) |>
+  filter(age_group %in% age_groups)
+
+population_counts <- stacked_housing |>
+  group_by(county, age_group) |>
+  summarise(n_pop = n())
+
+custom_colors <- c("#a3dee8","#64dae6","#63bcc1","#736f91","#49497f")
+
+stacked_bar <- ggplot(stacked_housing, aes(x = county, y = n_pop, fill = age_group)) +
+  geom_bar(stat = "identity") +
+  labs(x = "Counties in North Carolina", y = "Population", fill = "Age Group") +
+  ggtitle("Different Age Groups in North Carolina Counties") +
+  scale_fill_manual(values = custom_colors) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text.y = element_blank()) +
+    scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange", "Wake County" = "Wake"))
+
+
+stacked_housing_filtered <- stacked_housing |>
+  filter(county != "Wake County")
+
+stacked_bar_zoomed <- ggplot(stacked_housing_filtered, aes(x = county, y = n_pop, fill = age_group)) +
+  geom_bar(stat = "identity") +
+   labs(x = "Counties", y = "Population", fill = "Age Group") +
+  ggtitle("Different Age Groups in North Carolina Counties") +
+  scale_fill_manual(values = custom_colors) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text.y = element_blank()) +
+    scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange")) +
+  scale_y_continuous(labels = scales::comma)
+
+stacked_bar_zoomed
+stacked_bar
 ```
