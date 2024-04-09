@@ -1,9 +1,12 @@
 ---
 title: "Housing Burden Among Aging Populations"
 format: dashboard
+server: shiny
 ---
 
 ```{r}
+#| context: setup
+
 library(tidyverse)
 library(tigris)
 library(ggplot2)
@@ -11,12 +14,9 @@ library(tidycensus)
 library(shiny)
 library(patchwork)
 library(scales)
+library(dplyr)
 
 #census_api_key("7941d5fa13fcf9df50ce662e6c460ae7b6ffc5da", install = TRUE)
-```
-
-```{r}
-
 ```
 
 # NC Maps
@@ -204,6 +204,67 @@ dot_plot_own <- ggplot(filtered_data2, aes(x = county, y = agg_own_burden, color
 
 
 dot_plot_own
+```
+
+# Age Groups by County - Dynamic
+
+## {.sidebar}
+```{r}
+checkboxGroupInput("county", label = h3("Pick a County"),
+                   choices = list("Chatham & Lee Counties" = "Chatham & Lee Counties", "Durham County" = "Durham County", "Johnston County" = "Johnston County", "Moore & Montgomery Counties" = "Moore & Montgomery Counties", "Orange County" = "Orange County", "Wake County" = "Wake County"),
+                   selected = "Chatham & Lee Counties")
+```
+
+```{r}
+#| context: server
+
+reactive_stack <- reactive({
+age_groups <- c("65 to 69 years", "70 to 74 years", "75 to 79 years", "80 to 84 years", "85 years & over")
+
+stacked_housing <- housing |>
+  mutate(age_group = case_when(
+    age >= 65 & age <= 69 ~ "65 to 69 years",
+    age >= 70 & age <= 74 ~ "70 to 74 years",
+    age >= 75 & age <= 79 ~ "75 to 79 years",
+    age >= 80 & age <= 84 ~ "80 to 84 years",
+    age >= 85 ~ "85 years & over",
+    TRUE ~ "Other"
+  )) |>
+  filter(age_group %in% age_groups)
+
+population_counts <- stacked_housing |>
+  group_by(county, age_group) |>
+  summarise(n_pop = n())
+
+custom_colors <- c("#a3dee8","#64dae6","#63bcc1","#736f91","#49497f")
+
+stacked_housing_filtered <- stacked_housing |>
+  filter(county %in% input$county)
+})
+
+output$plot <- renderPlot({
+
+stacked_bar_zoomed <- ggplot(
+  reactive_stack(), 
+  aes(x = county, y = n_pop, fill = age_group)) +
+  geom_bar(stat = "identity") +
+   labs(x = "Counties", y = "Population", fill = "Age Group") +
+  ggtitle("Different Age Groups in North Carolina Counties") +
+  scale_fill_manual(values = custom_colors) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
+        axis.text.y = element_blank()) +
+    scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange")) +
+  scale_y_continuous(labels = scales::comma)
+
+stacked_bar_zoomed
+
+})
+```
+
+## Column 
+```{r}
+plotOutput('plot')
 ```
 
 # Age Groups by County
