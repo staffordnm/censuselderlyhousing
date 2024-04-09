@@ -10,6 +10,8 @@ library(ggplot2)
 library(tidycensus)
 library(shiny)
 library(patchwork)
+library(scales)
+
 #census_api_key("7941d5fa13fcf9df50ce662e6c460ae7b6ffc5da", install = TRUE)
 ```
 
@@ -150,7 +152,7 @@ patchwork + plot_annotation(
     plot.subtitle = element_text(hjust = 0.5, vjust = -1)))
 ```
 
-# Graph 3
+# Rent Burden by Race
 
 ```{r}
 filtered_data <- housing |>
@@ -169,14 +171,15 @@ dot_plot_rent <- ggplot(filtered_data, aes(x = county, y = agg_rent_burden, colo
   ggtitle("Aggregate Rent Burden by Race for Individuals Over 55") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-  scale_color_manual(values = c("black_agg" = "#64dae6", "white_agg" = "#63bcc1"),
-                     labels = c("black_agg" = "Black Resident Rent Burden", "white_agg" = "White Resident Rent Burdened"))
+  scale_color_manual(values = c("black_agg" = "#a3dee8", "white_agg" = "#49497f"),
+                     labels = c("black_agg" = "Black Resident Rent Burden", "white_agg" = "White Resident Rent Burdened")) +
+    scale_y_continuous(labels = comma)
 
 dot_plot_rent
 
 ```
 
-# Graph 4
+# Mortgage Burden by Race
 
 ```{r}
 filtered_data2 <- housing |>
@@ -191,17 +194,19 @@ filtered_data2 <- housing |>
 
 dot_plot_own <- ggplot(filtered_data2, aes(x = county, y = agg_own_burden, color = race)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
-  labs(x = "Counties", y = "Aggregate Mortgage Burden ", color = "Race") +
+  labs(x = "Counties", y = "Aggregate Mortgage Burden", color = "Race") +
   ggtitle("Aggregate Mortgage Burden by Race for Individuals Over 55") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_color_manual(values = c("black_agg" = "#a3dee8", "white_agg" = "#49497f"),
-                     labels = c("black_agg" = "Black Resident Mortgage Burden", "white_agg" = "White Resident Mortgage Burdened"))
+                     labels = c("black_agg" = "Black Resident Mortgage Burden", "white_agg" = "White Resident Mortgage Burdened")) +
+    scale_y_continuous(labels = comma)
+
 
 dot_plot_own
 ```
 
-# Graph 5
+# Age Groups by County
 
 ```{r}
 library(dplyr)
