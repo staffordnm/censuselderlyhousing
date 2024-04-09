@@ -1,10 +1,6 @@
 ---
 title: "Housing Burden Among Aging Populations"
 format: dashboard
-editor: visual
-output:
-  html_document:
-    progress: FALSE
 ---
 
 ```{r}
@@ -17,9 +13,16 @@ library(patchwork)
 #census_api_key("7941d5fa13fcf9df50ce662e6c460ae7b6ffc5da", install = TRUE)
 ```
 
-# Map 1
+```{r}
+
+```
+
+# NC Maps
 
 ```{r}
+#| message: false
+
+
 # load data
 housing <- read_csv(here::here("data", "ACSPUMS1Y2021_all_counties.csv"))
 
@@ -85,69 +88,13 @@ housing <- housing |>
   )
 
 #merging with tidycensus shape files
-nc_puma <- tigris::pumas("NC", cb = TRUE, year = 2020)
+nc_puma <- tigris::pumas("NC", cb = TRUE, year = 2020, progress_bar = FALSE)
 nc_map_data <- merge(nc_puma, housing, by.x = "PUMACE20", by.y = "pum_code")
 
 #get county data
-nc_counties <- tigris::counties("NC", cb = TRUE, year = 2020)
+nc_counties <- tigris::counties("NC", cb = TRUE, year = 2020, progress_bar = FALSE)
 cprc_counties <- c("Chatham County", "Durham County", "Orange County", "Wake County", "Moore County", "Lee County", "Johnston County")
 cprc_county_data <- nc_counties[nc_counties$NAMELSAD %in% cprc_counties, ]
-
-#map1 ------
-map1 <- ggplot() +
-  geom_sf(data = nc_map_data, aes(fill = aging_rent_burden_pct)) +
-  scale_fill_viridis_c(labels = scales::percent_format()) +  # color scale
-  geom_sf(data = cprc_county_data, fill = NA, color = "black", size = 0.5) +
-  labs(title = "Rent Burden Rates",
-       fill = "% Burdened by Rent Costs",
-       x = NULL,
-       y = NULL) +
-  theme_minimal() +
-  theme(panel.grid = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        legend.title = element_text(hjust = 0, vjust = 1, face = "bold", size = 10),
-        legend.position = "top",
-        legend.box = "horizontal",
-        plot.title = element_text(hjust = 0.5, face = "bold"), 
-        plot.margin = margin(t = 7, r = 15, b = 0, l = 0))
-#map 2 ------
-map2 <- ggplot() +
-  geom_sf(data = nc_map_data, aes(fill = aging_owner_burden_pct)) +
-  scale_fill_viridis_c(labels = scales::percent_format()) +  # color scale
-  geom_sf(data = cprc_county_data, fill = NA, color = "black", size = 0.5) +
-  labs(title = "Home Owner Cost Burden Rates",
-       fill = "% Burdened by Home Owner Costs",
-       x = NULL,
-       y = NULL) +
-  theme_minimal() +
-  theme(panel.grid = element_blank(),
-        axis.ticks = element_blank(),
-        axis.text.x = element_blank(),
-        axis.text.y = element_blank(),
-        legend.title = element_text(hjust = 0, vjust = 1, face = "bold", size = 10),
-        legend.position = "top",
-        legend.box = "horizontal",
-        plot.title = element_text(hjust = 0.5, face = "bold"), 
-        plot.margin = margin(t = 7, r = 0, b = 0, l = 15))
-
-#patchwork
-footer_plot <- ggplot() +
-  geom_blank() +
-  theme_void() +
-  annotate("text", x = 0, y = 0, label = "Source: American Community Survey 1-Year 2021 Public Use Microdata Survey", size = 2, color = "black", hjust = 0, vjust = 0)
-
-patchwork <- (map1 + map2) / footer_plot
-patchwork + plot_annotation(
-  title="Housing Burden Among Ages 55+ in NC Central Pines Regional Council Area", 
-  subtitle = "Housing Burden is highest in parts of Wake and Durham Counties",
-  theme = theme(plot.title = element_text(hjust = 0.5, face = "bold", size = 20), plot.subtitle = element_text(hjust = 0.5, vjust = -2)))
-```
-
-# Patchwork
-
-```{r}
 #map1 ------
 map1 <- ggplot() +
   geom_sf(data = nc_map_data, aes(fill = aging_rent_burden_pct)) +
@@ -167,6 +114,7 @@ map1 <- ggplot() +
         legend.box = "horizontal",
         plot.title = element_text(hjust = 0.5, face = "bold"), 
         plot.margin = margin(t = 20, r = 60, b = 0, l = 0))
+
 #map 2 ------
 map2 <- ggplot() +
   geom_sf(data = nc_map_data, aes(fill = aging_owner_burden_pct)) +
