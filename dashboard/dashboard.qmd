@@ -10,7 +10,7 @@ library(ggplot2)
 library(tidycensus)
 library(shiny)
 library(patchwork)
-census_api_key("7941d5fa13fcf9df50ce662e6c460ae7b6ffc5da", install = TRUE)
+#census_api_key("7941d5fa13fcf9df50ce662e6c460ae7b6ffc5da", install = TRUE)
 ```
 
 ```{r}
@@ -154,54 +154,49 @@ patchwork + plot_annotation(
 
 ```{r}
 filtered_data <- housing |>
-filter(age >= 55 & (white == 1 | black == 1) & rent_burden %in% c("Rent Burden"))
-
-agg_data_rent <- filtered_data |>
   group_by(county) |>
   summarise(
-    white_agg = sum(white == 1),
-    black_agg = sum(black == 1)
+    white_agg = sum(person_weight[white == 1 & rent_burden == "Rent Burden" & age >= 55]),
+    black_agg = sum(person_weight[black == 1 & rent_burden == "Rent Burden" & age >= 55])
   ) |>
   pivot_longer(cols = c(white_agg, black_agg),
                names_to = "race",
                values_to = "agg_rent_burden")
 
-dot_plot_rent <- ggplot(agg_data_rent, aes(x = county, y = agg_rent_burden, color = race)) +
+dot_plot_rent <- ggplot(filtered_data, aes(x = county, y = agg_rent_burden, color = race)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
   labs(x = "Counties", y = "Aggregate Rent Burden ", color = "Race") +
   ggtitle("Aggregate Rent Burden by Race for Individuals Over 55") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_color_manual(values = c("black_agg" = "#64dae6", "white_agg" = "#63bcc1"),
-                    labels = c("black_agg" = "Black Resident Rent Burden", "white_agg" = "White Resident Rent Burdened"))
+                     labels = c("black_agg" = "Black Resident Rent Burden", "white_agg" = "White Resident Rent Burdened"))
 
 dot_plot_rent
+
 ```
 
 # Graph 4
 
 ```{r}
-filtered_data <- housing |>
-filter(age >= 55 & (white == 1 | black == 1) & owner_burden %in% c("Owner Cost Burden"))
-
-agg_data_own <- filtered_data |>
+filtered_data2 <- housing |>
   group_by(county) |>
   summarise(
-    white_agg = sum(white == 1),
-    black_agg = sum(black == 1)
+    white_agg = sum(person_weight[white == 1 & owner_burden == "Owner Cost Burden" & age >= 55]),
+    black_agg = sum(person_weight[black == 1 & owner_burden == "Owner Cost Burden" & age >= 55])
   ) |>
   pivot_longer(cols = c(white_agg, black_agg),
                names_to = "race",
                values_to = "agg_own_burden")
 
-dot_plot_own <- ggplot(agg_data_own, aes(x = county, y = agg_own_burden, color = race)) +
+dot_plot_own <- ggplot(filtered_data2, aes(x = county, y = agg_own_burden, color = race)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
   labs(x = "Counties", y = "Aggregate Mortgage Burden ", color = "Race") +
   ggtitle("Aggregate Mortgage Burden by Race for Individuals Over 55") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
   scale_color_manual(values = c("black_agg" = "#a3dee8", "white_agg" = "#49497f"),
-                    labels = c("black_agg" = "Black Resident Mortgage Burden", "white_agg" = "White Resident Mortgage Burden"))
+                     labels = c("black_agg" = "Black Resident Mortgage Burden", "white_agg" = "White Resident Mortgage Burdened"))
 
 dot_plot_own
 ```
