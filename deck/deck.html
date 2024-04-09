@@ -10,7 +10,8 @@
 <link href="deck_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
   <meta name="generator" content="quarto-1.4.551">
 
-  <title>Census Elderly Housing</title>
+  <meta name="author" content="Suher Adi and Nicole Stafford">
+  <title>Housing Burden for NC Aging Populations</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -325,32 +326,91 @@
     <div class="slides">
 
 <section id="title-slide" class="quarto-title-block center">
-  <h1 class="title">Census Elderly Housing</h1>
+  <h1 class="title">Housing Burden for NC Aging Populations</h1>
 
 <div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Suher Adi and Nicole Stafford 
+</div>
+</div>
 </div>
 
 </section>
-<section id="quarto" class="slide level2">
-<h2>Quarto</h2>
-<p>Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <a href="https://quarto.org/docs/presentations/" class="uri">https://quarto.org/docs/presentations/</a>.</p>
-</section>
-<section id="bullets" class="slide level2">
-<h2>Bullets</h2>
-<p>When you click the <strong>Render</strong> button a document will be generated that includes:</p>
+<section id="research-question" class="title-slide slide level1 center">
+<h1>Research Question</h1>
+<style>
+.reveal {
+    background-color: lavender;
+}
+
+.reveal h1 {
+    font-family: Arial, sans-serif;
+    font-size: 30px; 
+</style>
+<p>How are different aging populations affected by housing costs in Central Pines Regional Council’s seven NC counties?</p>
 <ul>
-<li>Content authored with markdown</li>
-<li>Output from executable code</li>
+<li>7 Counties: Chatham and Lee, Durham, Orange, Wake, Moore and Montgomery, Lee, Johnston</li>
 </ul>
 </section>
-<section id="code" class="slide level2">
-<h2>Code</h2>
-<p>When you click the <strong>Render</strong> button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "test"</code></pre>
-</div>
-</div>
+
+<section>
+<section id="data-used" class="title-slide slide level1 center">
+<h1>Data Used</h1>
+<ul>
+<li>Latitude and Longitude data via tidycensus</li>
+<li>Census Bureau’s survey’s: ACS 1-Year Estimates Public Use Microdata Sample from 2021 (ACSPUMS1Y2021)</li>
+</ul>
+</section>
+<section id="weights" class="slide level2">
+<h2>Weights</h2>
+<ul>
+<li>Added to the data to show the frequency of an observation in the data set</li>
+<li>The larger the weight the more representative that observation is, the smaller the more of anomaly that observation is in terms of generalizability to the larger population</li>
+</ul>
+</section></section>
+<section>
+<section id="variables" class="title-slide slide level1 center">
+<h1>Variables</h1>
+<ol type="1">
+<li>housing_unit_weight</li>
+<li>person_weight</li>
+<li>household_income</li>
+<li>total_person_income</li>
+<li>percent_gross_own</li>
+<li>property_taxes</li>
+<li>monthly_rent</li>
+<li>age</li>
+<li>percent_gross_rent</li>
+<li>tenure</li>
+<li>sex</li>
+<li>american_indian</li>
+<li>asian</li>
+<li>white</li>
+<li>black</li>
+<li>pum_code</li>
+<li>state</li>
+<li>county</li>
+</ol>
+</section>
+<section id="variables-created" class="slide level2">
+<h2>Variables Created</h2>
+<ol type="1">
+<li>Rent Burden: if obs rent burdened or not</li>
+<li>Owner Burden: if obs housing burdened or not</li>
+<li>N_Pop: Total population per county</li>
+<li>Aging_Rent_Burden: rent burden for indivudals over 55 years old</li>
+<li>Aging_Owner_Burden: housing burden for indivudals over 55 years old</li>
+</ol>
+</section></section>
+<section id="findings" class="title-slide slide level1 center">
+<h1>Findings</h1>
+<iframe src="INSERT URL FOR DASHBOARD HERE" width="800" height="600" frameborder="0">
+</iframe>
+</section>
+
+<section id="thank-you" class="title-slide slide level1 center">
+<h1>Thank You!</h1>
 <div class="quarto-auto-generated-content">
 <div class="footer footer-default">
 
@@ -567,44 +627,6 @@
         ]
       });
     </script>
-    
-    <script>
-      // htmlwidgets need to know to resize themselves when slides are shown/hidden.
-      // Fire the "slideenter" event (handled by htmlwidgets.js) when the current
-      // slide changes (different for each slide format).
-      (function () {
-        // dispatch for htmlwidgets
-        function fireSlideEnter() {
-          const event = window.document.createEvent("Event");
-          event.initEvent("slideenter", true, true);
-          window.document.dispatchEvent(event);
-        }
-
-        function fireSlideChanged(previousSlide, currentSlide) {
-          fireSlideEnter();
-
-          // dispatch for shiny
-          if (window.jQuery) {
-            if (previousSlide) {
-              window.jQuery(previousSlide).trigger("hidden");
-            }
-            if (currentSlide) {
-              window.jQuery(currentSlide).trigger("shown");
-            }
-          }
-        }
-
-        // hookup for slidy
-        if (window.w3c_slidy) {
-          window.w3c_slidy.add_observer(function (slide_num) {
-            // slide_num starts at position 1
-            fireSlideChanged(null, w3c_slidy.slides[slide_num - 1]);
-          });
-        }
-
-      })();
-    </script>
-
     <script id="quarto-html-after-body" type="application/javascript">
     window.document.addEventListener("DOMContentLoaded", function (event) {
       const toggleBodyColorMode = (bsSheetEl) => {

@@ -1,26 +1,68 @@
 ---
-title: "Census Elderly Housing"
+title: "Housing Burden for NC Aging Populations"
+author: "Suher Adi and Nicole Stafford"
 format: revealjs
 ---
+# Research Question
+<style>
+.reveal {
+    background-color: lavender;
+}
 
-## Quarto
+.reveal h1 {
+    font-family: Arial, sans-serif;
+    font-size: 30px; 
+</style>
 
-Quarto enables you to weave together content and executable code into a finished presentation. To learn more about Quarto presentations see <https://quarto.org/docs/presentations/>.
+How are different aging populations affected by housing costs in Central Pines Regional Council’s seven NC counties?
 
-## Bullets
+- 7 Counties: 
+Chatham and Lee,
+Durham,
+Orange,
+Wake, 
+Moore and Montgomery,
+Lee,
+Johnston
 
-When you click the **Render** button a document will be generated that includes:
 
--   Content authored with markdown
--   Output from executable code
+# Data Used
 
-## Code
+- Latitude and Longitude data via tidycensus 
+- Census Bureau’s survey’s: ACS 1-Year Estimates Public Use Microdata Sample from 2021 (ACSPUMS1Y2021)
 
-When you click the **Render** button a presentation will be generated that includes both content and the output of embedded code. You can embed code like this:
+## Weights
+- Added to the data to show the frequency of an observation in the data set
+- The larger the weight the more representative that observation is, the smaller the more of anomaly that observation is in terms of generalizability to the larger population
 
-```{r}
-library(tidyverse)
-df <- read_csv(here::here("data", "data.csv"))
+# Variables
+1. housing_unit_weight
+2. person_weight
+3. household_income
+4. total_person_income
+5. percent_gross_own
+6. property_taxes
+7. monthly_rent
+8. age
+9. percent_gross_rent
+10. tenure
+11. sex
+12. american_indian
+13. asian
+14. white
+15. black
+16. pum_code
+17. state
+18. county
 
-print(df$`item 1`)
-```
+## Variables Created
+1. Rent Burden: if obs rent burdened or not 
+2. Owner Burden: if obs housing burdened or not 
+3. N_Pop: Total population per county
+4. Aging_Rent_Burden: rent burden for indivudals over 55 years old
+5. Aging_Owner_Burden: housing burden for indivudals over 55 years old
+
+# Findings
+<iframe src="INSERT URL FOR DASHBOARD HERE" width="800" height="600" frameborder="0"></iframe>
+
+# Thank You!
