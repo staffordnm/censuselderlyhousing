@@ -6,6 +6,7 @@ server: shiny
 
 ```{r}
 #| context: setup
+#| include: false
 
 library(tidyverse)
 library(tigris)
@@ -19,11 +20,9 @@ library(dplyr)
 #census_api_key("7941d5fa13fcf9df50ce662e6c460ae7b6ffc5da", install = TRUE)
 ```
 
-# NC Maps
-
 ```{r}
-#| message: false
-
+#| context: setup
+#| include: false
 
 # load data
 housing <- read_csv(here::here("data", "ACSPUMS1Y2021_all_counties.csv"))
@@ -53,42 +52,96 @@ colnames(housing) <- c(
 # data cleaning
 housing <- housing |> 
   mutate(
-    rent_burden = if_else(percent_gross_rent >= 30, "Rent Burden", "Not Rent Burden")
-  )
-
-housing <- housing |> 
-  mutate(
-    owner_burden = if_else(percent_gross_own >= 30, "Owner Cost Burden", "Not Owner Cost Burden")
-  )
-
-housing <- housing |> 
+    rent_burden = if_else(percent_gross_rent >= 30, 
+                          "Rent Burden", 
+                          "Not Rent Burden"),
+    owner_burden = if_else(percent_gross_own >= 30, 
+                           "Owner Cost Burden", 
+                           "Not Owner Cost Burden")
+  ) |> 
   group_by(county, tenure) |> 
   mutate(
     n_pop = n(),
-    percent_rent_burden_county = sum(rent_burden=="Rent Burden") / n_pop
-  )
-
-housing <- housing |> 
-  group_by(county, tenure) |> 
-  mutate(
-    n_pop = n(),
+    percent_rent_burden_county = sum(rent_burden=="Rent Burden") / n_pop,
     percent_owner_burden_county = sum(owner_burden=="Owner Cost Burden") / n_pop
-  )
-
-housing <- housing |>
+  ) |>
   group_by(pum_code) |> 
   mutate(
     aging_rent_burden = sum(person_weight[rent_burden == "Rent Burden" & age >= 55]),
-    aging_rent_burden_pct = aging_rent_burden / sum(person_weight[age >= 55])
-  )
-
-housing <- housing |>
-  group_by(pum_code) |> 
-  mutate(
-    aging_owner_burden = sum(person_weight[owner_burden == "Owner Cost Burden" & age >= 55]),
+    aging_rent_burden_pct = aging_rent_burden / sum(person_weight[age >= 55]),
+    aging_owner_burden = sum(person_weight[owner_burden == "Owner Cost Burden" & 
+                                             age >= 55]),
     aging_owner_burden_pct = aging_owner_burden / sum(person_weight[age >= 55])
   )
 
+```
+
+# Age Groups by County
+
+## {.sidebar}
+```{r}
+checkboxGroupInput("county", label = h3("Pick a County"),
+                   choices = list("Chatham & Lee Counties" = "Chatham & Lee Counties", "Durham County" = "Durham County", "Johnston County" = "Johnston County", "Moore & Montgomery Counties" = "Moore & Montgomery Counties", "Orange County" = "Orange County", "Wake County" = "Wake County"),
+                   selected = "Chatham & Lee Counties")
+```
+
+```{r}
+#| context: server
+
+age_groups <- c("65 to 69 years", "70 to 74 years", "75 to 79 years", "80 to 84 years", "85 years & over")
+
+stacked_housing <- housing |>
+  mutate(age_group = case_when(
+    age >= 65 & age <= 69 ~ "65 to 69 years",
+    age >= 70 & age <= 74 ~ "70 to 74 years",
+    age >= 75 & age <= 79 ~ "75 to 79 years",
+    age >= 80 & age <= 84 ~ "80 to 84 years",
+    age >= 85 ~ "85 years & over",
+    TRUE ~ "Other"
+  )) |>
+  filter(age_group %in% age_groups)
+
+population_counts <- stacked_housing |>
+  group_by(county, age_group) |>
+  summarise(n_pop = n())
+
+custom_colors <- c("#a3dee8","#64dae6","#63bcc1","#736f91","#49497f")
+
+reactive_stack <- reactive({
+
+stacked_housing |>
+  filter(county %in% input$county)
+})
+
+output$plot <- renderPlot({
+
+stacked_bar_zoomed <- ggplot(
+  reactive_stack(), 
+  aes(x = county, y = n_pop, fill = age_group)) +
+  geom_bar(stat = "identity") +
+   labs(x = NULL, y = "Population", fill = "Age Group") +
+  ggtitle("Different Age Groups in North Carolina Counties") +
+  scale_fill_manual(values = custom_colors) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust=1),
+        axis.text.y = element_blank(),
+        plot.title = element_text(hjust = 0.5, face = "bold")) +
+    scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange")) +
+  scale_y_continuous(labels = scales::comma)
+
+stacked_bar_zoomed
+
+})
+```
+
+## Column 
+```{r}
+plotOutput('plot')
+```
+
+# NC Maps 
+
+```{r}
 #merging with tidycensus shape files
 nc_puma <- tigris::pumas("NC", cb = TRUE, year = 2020, progress_bar = FALSE)
 nc_map_data <- merge(nc_puma, housing, by.x = "PUMACE20", by.y = "pum_code")
@@ -158,8 +211,8 @@ patchwork + plot_annotation(
 filtered_data <- housing |>
   group_by(county) |>
   summarise(
-    white_agg = sum(person_weight[white == 1 & rent_burden == "Rent Burden" & age >= 55]),
-    black_agg = sum(person_weight[black == 1 & rent_burden == "Rent Burden" & age >= 55])
+    white_agg = sum(person_weight[white == 1 & rent_burden == "Rent Burden" & age >= 55]) / sum(person_weight[white == 1 & age >= 55]),
+    black_agg = sum(person_weight[black == 1 & rent_burden == "Rent Burden" & age >= 55]) / sum(person_weight[black ==1 & age >= 55])
   ) |>
   pivot_longer(cols = c(white_agg, black_agg),
                names_to = "race",
@@ -167,13 +220,14 @@ filtered_data <- housing |>
 
 dot_plot_rent <- ggplot(filtered_data, aes(x = county, y = agg_rent_burden, color = race)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
-  labs(x = "Counties", y = "Aggregate Rent Burden ", color = "Race") +
-  ggtitle("Aggregate Rent Burden by Race for Individuals Over 55") +
+  labs(x = NULL, y = NULL, color = "Race") +
+  ggtitle("Rent Burden Percent by Race for Individuals 55+") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = 0.5, face = "bold")) +
   scale_color_manual(values = c("black_agg" = "#a3dee8", "white_agg" = "#49497f"),
-                     labels = c("black_agg" = "Black Resident Rent Burden", "white_agg" = "White Resident Rent Burdened")) +
-    scale_y_continuous(labels = comma)
+                     labels = c("black_agg" = "Black Rent Burdened Resident", "white_agg" = "White Rent Burdened Resident")) +
+    scale_y_continuous(labels = scales::percent_format())
 
 dot_plot_rent
 
@@ -185,8 +239,8 @@ dot_plot_rent
 filtered_data2 <- housing |>
   group_by(county) |>
   summarise(
-    white_agg = sum(person_weight[white == 1 & owner_burden == "Owner Cost Burden" & age >= 55]),
-    black_agg = sum(person_weight[black == 1 & owner_burden == "Owner Cost Burden" & age >= 55])
+    white_agg = sum(person_weight[white == 1 & owner_burden == "Owner Cost Burden" & age >= 55]) / sum(person_weight[white == 1 & age >= 55]),
+    black_agg = sum(person_weight[black == 1 & owner_burden == "Owner Cost Burden" & age >= 55]) / sum(person_weight[black == 1 & age >=55])
   ) |>
   pivot_longer(cols = c(white_agg, black_agg),
                names_to = "race",
@@ -194,129 +248,16 @@ filtered_data2 <- housing |>
 
 dot_plot_own <- ggplot(filtered_data2, aes(x = county, y = agg_own_burden, color = race)) +
   geom_point(position = position_dodge(width = 0.5), size = 3) +
-  labs(x = "Counties", y = "Aggregate Mortgage Burden", color = "Race") +
-  ggtitle("Aggregate Mortgage Burden by Race for Individuals Over 55") +
+  labs(x = NULL, y = NULL, color = "Race") +
+  ggtitle("Home Owner Cost Burden Percent by Race for Individuals 55+") +
   theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1),
+        plot.title = element_text(hjust = 0.5, face = "bold")) +
   scale_color_manual(values = c("black_agg" = "#a3dee8", "white_agg" = "#49497f"),
-                     labels = c("black_agg" = "Black Resident Mortgage Burden", "white_agg" = "White Resident Mortgage Burdened")) +
-    scale_y_continuous(labels = comma)
+                     labels = c("black_agg" = "Black Home Owner Burdened by Costs", "white_agg" = "White Home Owner Burdened by Costs")) +
+    scale_y_continuous(labels = scales::percent_format())
 
 
 dot_plot_own
 ```
 
-# Age Groups by County - Dynamic
-
-## {.sidebar}
-```{r}
-checkboxGroupInput("county", label = h3("Pick a County"),
-                   choices = list("Chatham & Lee Counties" = "Chatham & Lee Counties", "Durham County" = "Durham County", "Johnston County" = "Johnston County", "Moore & Montgomery Counties" = "Moore & Montgomery Counties", "Orange County" = "Orange County", "Wake County" = "Wake County"),
-                   selected = "Chatham & Lee Counties")
-```
-
-```{r}
-#| context: server
-
-reactive_stack <- reactive({
-age_groups <- c("65 to 69 years", "70 to 74 years", "75 to 79 years", "80 to 84 years", "85 years & over")
-
-stacked_housing <- housing |>
-  mutate(age_group = case_when(
-    age >= 65 & age <= 69 ~ "65 to 69 years",
-    age >= 70 & age <= 74 ~ "70 to 74 years",
-    age >= 75 & age <= 79 ~ "75 to 79 years",
-    age >= 80 & age <= 84 ~ "80 to 84 years",
-    age >= 85 ~ "85 years & over",
-    TRUE ~ "Other"
-  )) |>
-  filter(age_group %in% age_groups)
-
-population_counts <- stacked_housing |>
-  group_by(county, age_group) |>
-  summarise(n_pop = n())
-
-custom_colors <- c("#a3dee8","#64dae6","#63bcc1","#736f91","#49497f")
-
-stacked_housing_filtered <- stacked_housing |>
-  filter(county %in% input$county)
-})
-
-output$plot <- renderPlot({
-
-stacked_bar_zoomed <- ggplot(
-  reactive_stack(), 
-  aes(x = county, y = n_pop, fill = age_group)) +
-  geom_bar(stat = "identity") +
-   labs(x = "Counties", y = "Population", fill = "Age Group") +
-  ggtitle("Different Age Groups in North Carolina Counties") +
-  scale_fill_manual(values = custom_colors) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-        axis.text.y = element_blank()) +
-    scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange")) +
-  scale_y_continuous(labels = scales::comma)
-
-stacked_bar_zoomed
-
-})
-```
-
-## Column 
-```{r}
-plotOutput('plot')
-```
-
-# Age Groups by County
-
-```{r}
-library(dplyr)
-library(ggplot2)
-
-age_groups <- c("65 to 69 years", "70 to 74 years", "75 to 79 years", "80 to 84 years", "85 years & over")
-
-stacked_housing <- housing |>
-  mutate(age_group = case_when(
-    age >= 65 & age <= 69 ~ "65 to 69 years",
-    age >= 70 & age <= 74 ~ "70 to 74 years",
-    age >= 75 & age <= 79 ~ "75 to 79 years",
-    age >= 80 & age <= 84 ~ "80 to 84 years",
-    age >= 85 ~ "85 years & over",
-    TRUE ~ "Other"
-  )) |>
-  filter(age_group %in% age_groups)
-
-population_counts <- stacked_housing |>
-  group_by(county, age_group) |>
-  summarise(n_pop = n())
-
-custom_colors <- c("#a3dee8","#64dae6","#63bcc1","#736f91","#49497f")
-
-stacked_bar <- ggplot(stacked_housing, aes(x = county, y = n_pop, fill = age_group)) +
-  geom_bar(stat = "identity") +
-  labs(x = "Counties in North Carolina", y = "Population", fill = "Age Group") +
-  ggtitle("Different Age Groups in North Carolina Counties") +
-  scale_fill_manual(values = custom_colors) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-        axis.text.y = element_blank()) +
-    scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange", "Wake County" = "Wake"))
-
-
-stacked_housing_filtered <- stacked_housing |>
-  filter(county != "Wake County")
-
-stacked_bar_zoomed <- ggplot(stacked_housing_filtered, aes(x = county, y = n_pop, fill = age_group)) +
-  geom_bar(stat = "identity") +
-   labs(x = "Counties", y = "Population", fill = "Age Group") +
-  ggtitle("Different Age Groups in North Carolina Counties") +
-  scale_fill_manual(values = custom_colors) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1),
-        axis.text.y = element_blank()) +
-    scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange")) +
-  scale_y_continuous(labels = scales::comma)
-
-stacked_bar_zoomed
-stacked_bar
-```
