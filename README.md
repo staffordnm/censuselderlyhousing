@@ -104,3 +104,6 @@ calculations.
 - Percent of population burdened by home owner costs are more evenly
   distributed across the counties with some hot spots in Durham, Wake,
   and Johnston Counties
+
+- Rent cost burden and home ownership burden is worse for Black
+  residents of all seven counties.
