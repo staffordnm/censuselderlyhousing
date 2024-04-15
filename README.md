@@ -91,19 +91,20 @@ calculations.
 
 ## **Findings**
 
+- Rent cost burden and home ownership burden is worse for Black
+  residents of all counties.
+- Chatham and Lee counties the percent home owner cost burden is closer
+  making it less of a disparity along race.
+- Rent burden is consistently under 10% across all counties for white
+  residents, potentially because they are more likely to own than rent.
 - Wake County as the most populous county has the largest number of
   individuals 55+ with an expected stacking of more younger age groups
   compared to older age groups.
-
-- Chatham & Lee, Moore & Montgomery, and Orange County all had near
-  equivalent numbers of 65-69 and 70 - 79 year olds
-
-- Parts of Wake County and Durham County have the highest percent of
-  their population burdened by rental costs
-
+- Rent burden is concentrated around Raleigh in Wake County and Durham
+  in Durham County.
 - Percent of population burdened by home owner costs are more evenly
   distributed across the counties with some hot spots in Durham, Wake,
   and Johnston Counties
-
-- Rent cost burden and home ownership burden is worse for Black
-  residents of all seven counties.
+- Most counties follow an expected pattern of aging populations across
+  different age groups meaning there are more people in younger
+  categories and less people as they age.
