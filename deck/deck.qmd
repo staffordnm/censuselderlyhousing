@@ -1,5 +1,5 @@
 ---
-title: "Housing Burden for Seven NC Counties"
+title: "Housing Burden for NC Counties"
 author: "Suher Adi and Nicole Stafford"
 format: revealjs
 ---
@@ -21,15 +21,14 @@ format: revealjs
 </style>
 
 
-How are different aging populations affected by housing costs in Central Pines Regional Council’s seven NC counties?
+How are different aging populations affected by housing costs in Central Pines Regional Council’s NC counties of interest?
 
 1. Chatham and Lee
 2. Durham
 3. Orange
 4. Wake 
 5. Moore and Montgomery
-6. Lee
-7. Johnston
+6. Johnston
 
 ## Data Used
 
@@ -87,6 +86,9 @@ We used the PUMS person weight for all population estimate calculations.
 ![Data from the 2021 ACS](NC_Maps.jpeg)
 
 ## Findings
-<iframe src="https://staffordnm.github.io/censuselderlyhousing/dashboard/" width="800" height="600" frameborder="0"></iframe>
+- Rent cost burden and home ownership burden is worse for Black residents of all seven counties. 
+- Rent burden is over-all lower for white residents, likely because they are more likely to own than rent.
+- The population of Wake County is significantly larger than the other counties observed and skews younger. 
+- Rent burden is concentrated in XX place as compared to home ownership cost burden which is felt throughout Wake and Durham counties.  
 
 # Thank You!

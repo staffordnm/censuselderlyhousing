@@ -89,15 +89,18 @@ tells us the number of people in the population that the observation
 represents We used the PUMS person weight for all population estimate
 calculations.
 
-## **How to Get Started**
+## **Findings**
 
-- Start by downloading and saving the ‘ACSPUMS1Y2021_all_counties.csv’
-  file from the /data folder on my github /censuselderlyhousing
-  repository. Save to a local folder called “data”.
+- Wake County as the most populous county has the largest number of
+  individuals 55+ with an expected stacking of more younger age groups
+  compared to older age groups.
 
-- Open the dashboard.qmd file in the /dashboard folder on my github
-  /censuselderlyhousing repository.
+- Chatham & Lee, Moore & Montgomery, and Orange County all had near
+  equivalent numbers of 65-69 and 70 - 79 year olds
 
-- Download all the required packages and unhide the census api pass key.
+- Parts of Wake County and Durham County have the highest percent of
+  their population burdened by rental costs
 
-- Run the .qmd file
+- Percent of population burdened by home owner costs are more evenly
+  distributed across the counties with some hot spots in Durham, Wake,
+  and Johnston Counties
