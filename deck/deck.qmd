@@ -65,13 +65,16 @@ We used the PUMS person weight for all population estimate calculations.
 4. Aging_Rent_Burden: rent burden for indivudals over 55 years old
 5. Aging_Owner_Burden: housing burden for indivudals over 55 years old
 
-## Findings
+## Visual Representations
 
 ![Data from the 2021 ACS](zoom_out.jpeg)
 
 ---
 
 ![Data from the 2021 ACS](zoom_in.jpeg)
+---
+
+![Data from the 2021 ACS](dashboard.jpeg)
 
 ---
 
@@ -89,6 +92,6 @@ We used the PUMS person weight for all population estimate calculations.
 - Rent cost burden and home ownership burden is worse for Black residents of all seven counties. 
 - Rent burden is over-all lower for white residents, likely because they are more likely to own than rent.
 - The population of Wake County is significantly larger than the other counties observed and skews younger. 
-- Rent burden is concentrated in XX place as compared to home ownership cost burden which is felt throughout Wake and Durham counties.  
+- Rent burden is concentrated in [XX place] as compared to home ownership cost burden which is felt throughout Wake and Durham counties.  
 
 # Thank You!
