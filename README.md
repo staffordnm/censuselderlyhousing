@@ -89,6 +89,13 @@ tells us the number of people in the population that the observation
 represents We used the PUMS person weight for all population estimate
 calculations.
 
+## **Chnages Made to Graphs**
+
+Following the presentations we made, we made changes on the population
+bar chart and the dot plots on race taking feedback and moving the
+legend to the bottom of the charts. We also added in the scale for the
+values on the y-axis.
+
 ## **Findings**
 
 - Rent cost burden and home ownership burden is worse for Black

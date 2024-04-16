@@ -302,7 +302,8 @@ stacked_bar_zoomed <- ggplot(
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust=1),
         axis.text.y = element_blank(),
-        plot.title = element_text(hjust = 0.5, face = "bold")) +
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        legend.position = "bottom") +
     scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange")) +
   scale_y_continuous(labels = scales::comma)
 

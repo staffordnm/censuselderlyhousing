@@ -125,7 +125,8 @@ stacked_bar_zoomed <- ggplot(
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust=1),
         axis.text.y = element_blank(),
-        plot.title = element_text(hjust = 0.5, face = "bold")) +
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        legend.position = "bottom") +
     scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange")) +
   scale_y_continuous(labels = scales::comma)
 
@@ -224,7 +225,8 @@ dot_plot_rent <- ggplot(filtered_data, aes(x = county, y = agg_rent_burden, colo
   ggtitle("Rent Burden Percent by Race for Individuals 55+") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        plot.title = element_text(hjust = 0.5, face = "bold")) +
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+       legend.position = "bottom") +
   scale_color_manual(values = c("black_agg" = "#a3dee8", "white_agg" = "#49497f"),
                      labels = c("black_agg" = "Black Rent Burdened Resident", "white_agg" = "White Rent Burdened Resident")) +
     scale_y_continuous(labels = scales::percent_format())
@@ -252,7 +254,8 @@ dot_plot_own <- ggplot(filtered_data2, aes(x = county, y = agg_own_burden, color
   ggtitle("Home Owner Cost Burden Percent by Race for Individuals 55+") +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1),
-        plot.title = element_text(hjust = 0.5, face = "bold")) +
+        plot.title = element_text(hjust = 0.5, face = "bold"),
+        legend.position = "bottom") +
   scale_color_manual(values = c("black_agg" = "#a3dee8", "white_agg" = "#49497f"),
                      labels = c("black_agg" = "Black Home Owner Burdened by Costs", "white_agg" = "White Home Owner Burdened by Costs")) +
     scale_y_continuous(labels = scales::percent_format())
