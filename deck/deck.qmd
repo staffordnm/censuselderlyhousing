@@ -96,7 +96,7 @@ We used the PUMS person weight for all population estimate calculations.
 
 ## Findings
 - Rent burden is concentrated around Raleigh in Wake County and Durham in Durham County.
-- Percent of population burdened by home owner costs are more evenly distributed across the counties with some hot spots in Durham, Wake, and Johnston Counties
+- Percent of population burdened by home owner costs are more evenly distributed across the counties with some hot spots in Durham, Wake, and Johnston Counties.
 - Most counties follow an expected pattern of aging populations across different age groups meaning there are more people in younger categories and less people as they age.
 
 # Thank You!
