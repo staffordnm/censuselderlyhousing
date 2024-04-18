@@ -71,7 +71,7 @@ housing <- housing |>
     aging_rent_burden_pct = aging_rent_burden / sum(person_weight[age >= 55]),
     aging_owner_burden = sum(person_weight[owner_burden == "Owner Cost Burden" & 
                                              age >= 55]),
-    aging_owner_burden_pct = aging_owner_burden / sum(person_weight[age >= 55])
+    aging_owner_burden_pct = aging_owner_burden / sum(person_weight[age >= 55]),
   )
 
 ```
@@ -117,14 +117,13 @@ output$plot <- renderPlot({
 
 stacked_bar_zoomed <- ggplot(
   reactive_stack(), 
-  aes(x = county, y = n_pop, fill = age_group)) +
+  aes(x = county, y = person_weight, fill = age_group)) +
   geom_bar(stat = "identity") +
    labs(x = NULL, y = "Population", fill = "Age Group") +
   ggtitle("Different Age Groups in North Carolina Counties") +
   scale_fill_manual(values = custom_colors) +
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust=1),
-        axis.text.y = element_blank(),
         plot.title = element_text(hjust = 0.5, face = "bold"),
         legend.position = "bottom") +
     scale_x_discrete(labels = c("Chatham & Lee Counties" = "Chatham & Lee", "Durham County" = "Durham", "Johnston County" = "Johnston", "Moore & Montgomery Counties" = "Moore & Montgomery", "Orange County" = "Orange")) +
